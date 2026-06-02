@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # MongoDB Database Service
+  mongodb:
+    image: mongo:6.0-jammy
+    container_name: stock-sentiment-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - stock-sentiment-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  # Express Stock Sentiment API Service
+  api:
+    build: .
+    container_name: stock-sentiment-api
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/stock_sentiment
+      - FINNHUB_API_KEY=${FINNHUB_API_KEY}
+    volumes:
+      - hf_cache:/app/.cache
+    networks:
+      - stock-sentiment-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  stock-sentiment-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+  hf_cache:
+    driver: local

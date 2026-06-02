@@ -1,0 +1,22 @@
+{
+  "name": "dockerized-stock-sentiment-api",
+  "version": "1.0.0",
+  "description": "Dockerized Stock Sentiment API with HuggingFace and MongoDB Caching",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "@xenova/transformers": "^2.17.2",
+    "axios": "^1.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^9.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.2"
+  }
+}
